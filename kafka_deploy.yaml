@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka
+  labels:
+    app: kafka
+spec:
+  selector:
+    matchLabels:
+      app: kafka
+  template:
+    metadata:
+      labels:
+        app: kafka
+    spec:
+      containers:
+        - name: auth
+          image: fkrk56/apckafka
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 4000
+            - name: BROKER_URI
+              value: "http://my-cluster-kafka-external-bootstrap.my-kafka-project.svc.cluster.local:32100"
