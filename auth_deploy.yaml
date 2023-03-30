@@ -23,4 +23,4 @@ spec:
             - name: MONGO_URI
               value: "mongodb://kjw:1234@mongo-mongodb.default.svc.cluster.local:27017/auth"
             - name: BROKER_URI
-              value: "http://my-cluster-kafka-external-bootstrap.my-kafka-project.svc.cluster.local:32100"
+              value: "kafka://my-cluster-kafka-external-bootstrap.my-kafka-project.svc.cluster.local:32100"

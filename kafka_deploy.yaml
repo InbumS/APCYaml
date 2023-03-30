@@ -19,5 +19,6 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 4000
+          env:
             - name: BROKER_URI
-              value: "http://my-cluster-kafka-external-bootstrap.my-kafka-project.svc.cluster.local:32100"
+              value: "localhost:32100"

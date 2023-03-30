@@ -17,11 +17,10 @@ spec:
         port: 9093
         tls: false
         configuration:
-          bootstrap:
-            nodePort: 32100
           brokers:
-          - broker: 0
-            nodePort: 32000
+            - broker: 0
+              advertisedHost: localhost
+              nodePort: 32100
     storage:
       type: jbod
       volumes:
