@@ -27,13 +27,6 @@ spec:
                 name: auth
                 port:
                   number: 3000
-          - path: /kafka
-            pathType: Prefix
-            backend:
-              service:
-                name: kafka
-                port:
-                  number: 4000
           - path: /
             pathType: Prefix
             backend:
