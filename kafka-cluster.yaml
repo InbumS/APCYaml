@@ -1,7 +1,6 @@
 apiVersion: kafka.strimzi.io/v1beta2
 kind: Kafka
 metadata:
-  namespace: my-kafka-project
   name: my-cluster
 spec:
   kafka:
@@ -12,15 +11,19 @@ spec:
         port: 9092
         type: internal
         tls: false
-      - name: external
-        type: nodeport
+      - name: tls
         port: 9093
+        type: internal
+        tls: true
+        authentication:
+          type: tls
+      - name: external
+        port: 9094
+        type: nodeport
         tls: false
-        configuration:
-          brokers:
-            - broker: 0
-              advertisedHost: localhost
-              nodePort: 32100
+        configuration:              
+          bootstrap:               
+            nodePort: 32100         
     storage:
       type: jbod
       volumes:

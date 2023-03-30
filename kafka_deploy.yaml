@@ -21,4 +21,4 @@ spec:
             - containerPort: 4000
           env:
             - name: BROKER_URI
-              value: "localhost:32100"
+              value: "my-cluster-kafka-external-bootstrap:9094"

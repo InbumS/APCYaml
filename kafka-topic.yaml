@@ -2,7 +2,6 @@ apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
   name: mytopic
-  namespace: my-kafka-project
   labels:
     strimzi.io/cluster: "my-cluster"
 spec:
