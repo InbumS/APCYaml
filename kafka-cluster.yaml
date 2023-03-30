@@ -1,73 +1,79 @@
 apiVersion: kafka.strimzi.io/v1beta2
 kind: Kafka
-metadata:
-  name: my-cluster
 spec:
+  entityOperator:
+    topicOperator: {}
+    userOperator: {}
   kafka:
-    replicas: 1
-    listeners:
+    config:
+      default.replication.factor: 3
+      min.insync.replicas: 2
+      offsets.topic.replication.factor: 3
+      transaction.state.log.min.isr: 2
+      transaction.state.log.replication.factor: 3
     listeners:
       - name: plain
         port: 9092
-        type: internal
         tls: false
+        type: internal
       - name: tls
         port: 9093
+        tls: false
         type: internal
-        tls: true
-        authentication:
-          type: tls
       - name: external
         port: 9094
-        type: nodeport
         tls: false
-        configuration:              
-          bootstrap:               
-            nodePort: 32100
-    metricsConfig: ## exporter
+        type: nodeport
+    metricsConfig:
       type: jmxPrometheusExporter
       valueFrom:
         configMapKeyRef:
-          key: kafka-metrics-config.yaml
-          name: kafka-metrics         
+          key: kafka-metrics-config.yml
+          name: kafka-metrics
+    replicas: 1
     storage:
       type: jbod
       volumes:
-      - id: 0
-        type: persistent-claim
-        class: nks-block-storage
-        size: 1Gi
-        deleteClaim: false
+        - deleteClaim: true
+          id: 0
+          size: 1Gi
+          type: persistent-claim
     template:
       pod:
-        securityContext:
-          runAsUser: 0
-          fsGroup: 0
-    config:
-      offsets.topic.replication.factor: 1
-      transaction.state.log.replication.factor: 1
-      transaction.state.log.min.isr: 1
+        affinity:
+          podAntiAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - kafka
+                topologyKey: kubernetes.io/hostname
   kafkaExporter:
     groupRegex: .*
     topicRegex: .*
   zookeeper:
-    metricsConfig: ## 추가할 부분
+    metricsConfig:
       type: jmxPrometheusExporter
       valueFrom:
         configMapKeyRef:
-          key: zookeeper-metrics-config.yaml
-          name: zookeeper-metrics
+          key: zookeeper-metrics-config.yml
+          name: kafka-metrics
     replicas: 1
     storage:
-      type: persistent-claim
-      class: nks-block-storage
+      deleteClaim: true
       size: 1Gi
-      deleteClaim: false
+      type: persistent-claim
     template:
       pod:
-        securityContext:
-          runAsUser: 0
-          fsGroup: 0
-  entityOperator:
-    topicOperator: {}
-    userOperator: {}
+        affinity:
+          podAntiAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - zookeeper
+                topologyKey: kubernetes.io/hostname
