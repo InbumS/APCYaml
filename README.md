@@ -109,9 +109,6 @@ kubectl apply -f auth_service.yaml -f auth_deploy.yaml -f dashboard_service.yaml
 kubectl apply -f nginx-ingress.yaml
 kubectl get ing
 
-타겟그룹  30009 30920 30561 무조건 생성
-리스너 4000 9200 5601
-
 ---
 
 kubectl apply -f elasticsearch.yaml -f kibana.yaml
@@ -126,6 +123,33 @@ kubectl apply -f fluentd.yaml -f fluentd-config.yaml
 
 ---
 
+cd monitoring
+kubectl create ns monitoring
+
+kubectl apply -f prometheus-cluster-role.yaml -f prometheus-config-map.yaml
+kubectl apply -f prometheus-deployment.yaml -f prometheus-node-exporter.yaml -f prometheus-svc.yaml 
+kubectl apply -f kube-state-cluster-role.yaml -f kube-state-svcaccount.yaml -f kube-state-deployment.yaml -f kube-state-svc.yaml
+kubectl apply -f grafana.yaml 
+
+CRD 설정
+kubectl create -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/main/bundle.yaml
+
+프로메테우스 그라파나 카프카 es kibana
+타겟그룹 30003 30004 30009 30920 30561 무조건 생성
+리스너 9090 3000 4000 9200 5601
+
+git clone https://github.com/danielqsj/kafka_exporter.git
+cd kafka_exporter/charts/kafka-exporter
+
+수정
+kafkaExporter:
+  kafka:
+    servers:
+    - my-cluster-kafka-bootstrap.default.svc:9092
+
+helm install kafka-exporter . -n monitoring
+
+--------------------------------------------------------------
 optional
 
 ---
