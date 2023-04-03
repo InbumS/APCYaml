@@ -5,11 +5,11 @@ chmod +x ./ncp-iam-authenticator
 mkdir -p $HOME/bin && cp ./ncp-iam-authenticator $HOME/bin/ncp-iam-authenticator && export PATH=$PATH:$HOME/bin
 echo 'export PATH=$PATH:$HOME/bin' >> ~/.bash_profile
 
-export NCLOUD_ACCESS_KEY=CO7yCwEdKHh3PHZONMyh
-export NCLOUD_SECRET_KEY=Tpp3IxBT4Wf8qDPuTwJgP2G9yxR2GbzdCQlYXHuR
+export NCLOUD_ACCESS_KEY=NAVERCLOUD API
+export NCLOUD_SECRET_KEY=NAVERCLOUD API
 export NCLOUD_API_GW=https://ncloud.apigw.ntruss.com
 
-ncp-iam-authenticator create-kubeconfig --region KR --clusterUuid 4c5c3204-f9bc-418f-ba01-80126212a424 --output kubeconfig.yaml
+ncp-iam-authenticator create-kubeconfig --region KR --clusterUuid 쿠버네티스 UUID --output kubeconfig.yaml
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 kubectl version --client --output=yaml
@@ -96,9 +96,6 @@ helm repo update
 helm search repo ingress-nginx
 helm install ingress-nginx ingress-nginx/ingress-nginx -n ingress-nginx
 
-타겟그룹 30003 30004 30009 30920 30561 무조건 생성
-리스너 5000 5001 4000 9200 5601
-
 kubectl apply -f kafka-pv.yaml -f kafka-cluster.yaml -f kafka-topic.yaml
 
 kubectl get all
@@ -111,6 +108,9 @@ kubectl apply -f auth_service.yaml -f auth_deploy.yaml -f dashboard_service.yaml
 
 kubectl apply -f nginx-ingress.yaml
 kubectl get ing
+
+타겟그룹  30009 30920 30561 무조건 생성
+리스너 4000 9200 5601
 
 ---
 
@@ -127,5 +127,7 @@ kubectl apply -f fluentd.yaml -f fluentd-config.yaml
 ---
 
 optional
+
+---
 kubectl exec my-cluster-kafka-0 -it -- bin/kafka-console-producer.sh --bootstrap-server my-cluster-kafka-bootstrap:9092 --topic my-topic
 kubectl exec my-cluster-kafka-0 -it -- bin/kafka-console-consumer.sh --bootstrap-server my-cluster-kafka-bootstrap:9092 --topic my-topic --from-beginning
