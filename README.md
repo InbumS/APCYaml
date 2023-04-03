@@ -31,17 +31,24 @@ helm repo update
 mkdir -p ~/install/mongodb
 cd ~/install/mongodb
 helm inspect values bitnami/mongodb > mongo.yaml
+vi mongo.yaml
 
 ---
 
 수정 후 설치
+
+---
+
 useStatefulSet: false -> true
 rootPassword: "" -> "1234"
 storageClass: "" -> "nks-block-storage"
 
-helm install mongo -f mongo.yaml bitnami/mongodb
+---
 
-## cd ~
+helm install mongo -f mongo.yaml bitnami/mongodb
+cd ~
+
+---
 
 kubectl exec -it mongo-mongodb-0 /bin/bash
 
@@ -74,12 +81,16 @@ sed -i 's/namespace: .*/namespace: kafka/' install/cluster-operator/*RoleBinding
 
 vi install/cluster-operator/060-Deployment-strimzi-cluster-operator.yaml
 
+---
+
         env:
         - name: STRIMZI_NAMESPACE
           value: default --> 추가
           #valueFrom:   --> 주석처리
           #  fieldRef:  --> 주석처리
           #    fieldPath: metadata.namespace  --> 주석처리
+
+---
 
 kubectl apply -f install/cluster-operator/ -n kafka
 kubectl create -f install/cluster-operator/020-RoleBinding-strimzi-cluster-operator.yaml
@@ -108,10 +119,11 @@ kubectl apply -f auth_service.yaml -f auth_deploy.yaml -f dashboard_service.yaml
 
 kubectl apply -f nginx-ingress.yaml
 kubectl get ing
-
+kubectl apply -f elasticsearch.yaml -f kibana.yaml
 ---
 
-kubectl apply -f elasticsearch.yaml -f kibana.yaml
+타겟그룹 30009 30920 30561
+리스너 4000 9200 5601
 
 ---
 
@@ -134,12 +146,18 @@ kubectl apply -f grafana.yaml
 CRD 설정
 kubectl create -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/main/bundle.yaml
 
-프로메테우스 그라파나 카프카 es kibana
-타겟그룹 30003 30004 30009 30920 30561 무조건 생성
-리스너 9090 3000 4000 9200 5601
+---
+
+타겟그룹 30003 30004 
+리스너 9090 3000
+
+---
 
 git clone https://github.com/danielqsj/kafka_exporter.git
 cd kafka_exporter/charts/kafka-exporter
+vi values.yaml
+
+---
 
 수정
 kafkaExporter:
@@ -151,6 +169,11 @@ helm install kafka-exporter . -n monitoring
 
 --------------------------------------------------------------
 optional
+
+---
+
+17866 kubernetes
+10122 카프카
 
 ---
 kubectl exec my-cluster-kafka-0 -it -- bin/kafka-console-producer.sh --bootstrap-server my-cluster-kafka-bootstrap:9092 --topic my-topic
