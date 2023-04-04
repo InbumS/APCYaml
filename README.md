@@ -26,6 +26,24 @@ chmod 700 get_helm.sh
 chmod o-r ~/.kube/config
 chmod g-r ~/.kube/config
 
+curl -L https://git.io/getLatestIstio | sh -
+cd istio-1.17.1/
+for i in install/kubernetes/helm/istio-init/files/crd*yaml; do kubectl apply -f $i; done
+kubectl create namespace istio-system
+helm template \
+--namespace istio-system \
+--set tracing.enabled=true \
+--set global.mtls.enabled=true \
+--set grafana.enabled=true \
+--set kiali.enabled=true \
+--set servicegraph.enabled=true \
+install/kubernetes/helm/istio \
+> ./istioFex.yaml
+kubectl apply -f istioFex.yaml
+kubectl get pod --namespace=istio-system
+kubectl label namespace default istio-injection=enabled
+kubectl get ns --show-labels
+
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
 mkdir -p ~/install/mongodb
@@ -117,8 +135,11 @@ kubectl apply -f auth_service.yaml -f auth_deploy.yaml -f dashboard_service.yaml
 
 ---
 
-kubectl apply -f nginx-ingress.yaml
-kubectl get ing
+kubectl apply -f istio-gateway.yaml
+kubectl get gateway
+
+---
+
 kubectl apply -f elasticsearch.yaml -f kibana.yaml
 ---
 
