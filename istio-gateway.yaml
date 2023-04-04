@@ -6,12 +6,33 @@ spec:
   selector:
     istio: ingressgateway # use istio default controller
   servers:
-  - port:
-      number: 80
-      name: http
-      protocol: HTTP
-    hosts:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: home
+spec:
+  hosts:
     - "*"
+  gateways:
+    - apc-gateway
+  http:
+    - match:
+        - uri:
+            exact: /
+      rewrite:
+        uri: "/users"
+      route:
+        - destination:
+            host: "auth.default.svc.cluster.local"
+            port:
+              number: 3000
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -19,18 +40,18 @@ metadata:
   name: auth
 spec:
   hosts:
-  - "*"
+    - "*"
   gateways:
-  - apc-gateway
+    - apc-gateway
   http:
-  - match:
-    - uri:
-        prefix: /users
-    route:
-    - destination:
-        host: "auth.default.svc.cluster.local"
-        port:
-          number: 3000
+    - match:
+        - uri:
+            prefix: /users
+      route:
+        - destination:
+            host: "auth.default.svc.cluster.local"
+            port:
+              number: 3000
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -38,15 +59,15 @@ metadata:
   name: dashboard
 spec:
   hosts:
-  - "*"
+    - "*"
   gateways:
-  - apc-gateway
+    - apc-gateway
   http:
-  - match:
-    - uri:
-        prefix: /dashboard
-    route:
-    - destination:
-        host: "dashboard.default.svc.cluster.local"
-        port:
-          number: 3001
+    - match:
+        - uri:
+            prefix: /dashboard
+      route:
+        - destination:
+            host: "dashboard.default.svc.cluster.local"
+            port:
+              number: 3001
