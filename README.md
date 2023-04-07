@@ -44,6 +44,40 @@ kubectl get pod --namespace=istio-system
 kubectl label namespace default istio-injection=enabled
 kubectl get ns --show-labels
 
+---
+
+
+vi samples/addons/kiali.yaml
+nodeport 설정 및 prometheus url 설정
+
+    external_services:
+      prometheus:
+        url: http://istio-syste-istio-ingres-8ead8-16689455-20d653ba2048.kr.lb.naverncp.com:9090
+
+spec:
+  type: NodePort
+  ports:
+  - name: http
+    port: 20001
+    targetPort: 20001
+    nodePort: 32001
+  - name: http-metrics
+    appProtocol: http
+    protocol: TCP
+    port: 9090
+  selector:
+    app.kubernetes.io/name: kiali
+    app.kubernetes.io/instance: kiali
+
+
+kubectl apply -f samples/addons/kiali.yaml
+
+
+타겟그룹 32001 생성
+리스너 20001
+
+---
+
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
 mkdir -p ~/install/mongodb
@@ -131,7 +165,7 @@ kubectl get all
 
 ---
 
-kubectl apply -f auth_service.yaml -f auth_deploy.yaml -f dashboard_service.yaml -f dashboard_deploy.yaml -f kafka_deploy.yaml -f kafka_service.yaml
+kubectl apply -f auth_service.yaml -f auth_deploy.yaml -f dashboard_service.yaml -f dashboard_deploy.yaml -f product_service.yaml -f product_deploy.yaml -f kafka_deploy.yaml -f kafka_service.yaml
 
 ---
 
@@ -195,7 +229,26 @@ optional
 
 17866 kubernetes
 10122 카프카
+7639 istio service
+7645 istio control plane
 
----
+istioctl x uninstall --purge
+
 kubectl exec my-cluster-kafka-0 -it -- bin/kafka-console-producer.sh --bootstrap-server my-cluster-kafka-bootstrap:9092 --topic my-topic
 kubectl exec my-cluster-kafka-0 -it -- bin/kafka-console-consumer.sh --bootstrap-server my-cluster-kafka-bootstrap:9092 --topic my-topic --from-beginning
+
+---
+
+인증서
+
+---
+
+
+helm repo add jetstack https://charts.jetstack.io
+helm repo update
+helm3 install cert-manager --namespace cert-manager --version v0.16.1 jetstack/cert-manager --set installCRDs=true --set 'extraArgs={--dns01-recursive-nameservers=8.8.8.8:53,1.1.1.1:53}'
+cd cert
+kubectl apply -f secret.yaml -f issuer.yaml -f certificate.yaml
+istio-gateway https 적용
+
+가비아 domain : kim0418.shop
