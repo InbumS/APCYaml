@@ -1,5 +1,5 @@
 # APCYaml
-쿠버네티스 배포 yaml 파일들 (naver cloud 기준)
+쿠버네티스 배포 yaml 파일 및 nginx.conf (naver cloud 기준)
 
 curl -o ncp-iam-authenticator https://kr.object.ncloudstorage.com/nks-download/ncp-iam-authenticator/v1.0.5/linux/amd64/ncp-iam-authenticator
 chmod +x ./ncp-iam-authenticator
