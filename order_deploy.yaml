@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: product
+  name: order
   labels:
-    app: product
+    app: order
 spec:
   selector:
     matchLabels:
-      app: product
+      app: order
   template:
     metadata:
       labels:
-        app: product
+        app: order
     spec:
       containers:
-        - name: product
-          image: fkrk56/apcproduct
+        - name: order
+          image: fkrk56/apcorder
           imagePullPolicy: Always
           ports:
-            - containerPort: 3002
+            - containerPort: 3003
           env:
             - name: MONGO_URI
               value: "mongodb://kjw:1234@mongo-mongodb.default.svc.cluster.local:27017/auth"
