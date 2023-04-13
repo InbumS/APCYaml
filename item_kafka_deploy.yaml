@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kafka
+  name: itemkafka
   labels:
-    app: kafka
+    app: itemkafka
 spec:
   selector:
     matchLabels:
-      app: kafka
+      app: itemkafka
   template:
     metadata:
       labels:
-        app: kafka
+        app: itemkafka
     spec:
       containers:
-        - name: auth
-          image: fkrk56/apckafka
+        - name: itemkafka
+          image: fkrk56/apcitemkafka
           imagePullPolicy: Always
           ports:
-            - containerPort: 4000
+            - containerPort: 4001
           env:
             - name: BROKER_URI
               value: "my-cluster-kafka-bootstrap:9092"
