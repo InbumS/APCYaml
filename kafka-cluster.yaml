@@ -28,7 +28,7 @@ spec:
           type: persistent-claim
           class: nks-block-storage
           size: 1Gi
-          deleteClaim: true
+          deleteClaim: false
     config:
       offsets.topic.replication.factor: 3
       transaction.state.log.replication.factor: 3
@@ -41,7 +41,12 @@ spec:
       type: persistent-claim
       class: nks-block-storage
       size: 1Gi
-      deleteClaim: true
+      deleteClaim: false
+    template:
+      pod:
+        securityContext:
+          runAsUser: 0
+          fsGroup: 0
   entityOperator:
     topicOperator: {}
     userOperator: {}

@@ -1,0 +1,57 @@
+# mynginx-ingress.yaml
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: path-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/app-root: /users
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  ingressClassName: nginx
+  rules:
+    # - host: -> domain이 없는 경우 생략 가능
+    - http:
+        paths:
+          - path: /user
+            pathType: Prefix
+            backend:
+              service:
+                name: auth
+                port:
+                  number: 3000
+          - path: /dashboard
+            pathType: Prefix
+            backend:
+              service:
+                name: dashboard
+                port:
+                  number: 3001
+          - path: /product
+            pathType: Prefix
+            backend:
+              service:
+                name: product
+                port:
+                  number: 3002
+          - path: /order
+            pathType: Prefix
+            backend:
+              service:
+                name: order
+                port:
+                  number: 3003
+          - path: /events
+            pathType: Prefix
+            backend:
+              service:
+                name: kafka
+                port:
+                  number: 4000
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: http-svc
+                port:
+                  number: 80
