@@ -46,6 +46,23 @@ kubectl label namespace default istio-injection=enabled
 kubectl get ns --show-labels
 
 ---
+nginx ingress & cert-manager
+
+kubectl create namespace nginx-ingress
+helm repo add nginx-stable https://helm.nginx.com/stable
+helm repo update
+kubectl create 
+helm install nginx nginx-stable/nginx-ingress --namespace nginx-ingress  --set controller.enableCustomResources=true --create-namespace  --set controller.enableCertManager=true --set controller.enableExternalDNS=true
+
+helm repo add jetstack https://charts.jetstack.io
+helm repo update
+
+helm install cert-manager jetstack/cert-manager \
+  --namespace cert-manager --create-namespace \
+  --version v1.9.1  --set installCRDs=true
+
+
+---
 
 
 vi samples/addons/kiali.yaml
@@ -154,31 +171,30 @@ kubectl get pods -n kafka
 
 cd ..
 
-helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-kubectl create ns ingress-nginx
-helm repo update
-helm search repo ingress-nginx
-helm install ingress-nginx ingress-nginx/ingress-nginx -n ingress-nginx
-
 kubectl apply -f kafka-pv.yaml -f kafka-cluster.yaml -f kafka-topic.yaml
 
 kubectl get all
 
 ---
 
-kubectl apply -f auth_service.yaml -f auth_deploy.yaml -f dashboard_service.yaml -f dashboard_deploy.yaml -f product_service.yaml -f product_deploy.yaml -f kafka_deploy.yaml -f kafka_service.yaml
+kubectl apply -f auth_service.yaml -f auth_deploy.yaml -f dashboard_service.yaml -f dashboard_deploy.yaml -f product_service.yaml -f product_deploy.yaml -f order_service.yaml -f order_deploy.yaml 
+kubectl apply -f kafka_deploy.yaml -f kafka_service.yaml
 
 ---
 
-kubectl apply -f istio-gateway.yaml
-kubectl get gateway
+cloudflare에 record CNAME 기록
+cd cert
+kubectl apply -f secret.yaml -f issuer.yaml
+cd ..
+kubectl apply -f nginx-ingress.yaml
+kubectl get ing
 
 ---
 
 kubectl apply -f elasticsearch.yaml -f kibana.yaml
 ---
 
-타겟그룹 30009 30920 30561
+타겟그룹 30012 30920 30561
 리스너 4000 9200 5601
 
 ---
@@ -240,7 +256,7 @@ kubectl exec my-cluster-kafka-0 -it -- bin/kafka-console-consumer.sh --bootstrap
 
 ---
 
-인증서
+인증서 (istio)
 
 ---
 
