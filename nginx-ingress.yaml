@@ -1,19 +1,25 @@
 # mynginx-ingress.yaml
-
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: path-ingress
   annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    acme.cert-manager.io/http01-edit-in-place: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/app-root: /users
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+        - www.kim0418.shop
+      secretName: apc-tls
   rules:
-    # - host: -> domain이 없는 경우 생략 가능
-    - http:
+    - host: www.kim0418.shop
+      # - host: -> domain이 없는 경우 생략 가능
+      http:
         paths:
-          - path: /user
+          - path: /
             pathType: Prefix
             backend:
               service:
@@ -41,17 +47,3 @@ spec:
                 name: order
                 port:
                   number: 3003
-          - path: /events
-            pathType: Prefix
-            backend:
-              service:
-                name: kafka
-                port:
-                  number: 4000
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: http-svc
-                port:
-                  number: 80
