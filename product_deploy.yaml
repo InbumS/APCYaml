@@ -21,4 +21,7 @@ spec:
             - containerPort: 3002
           env:
             - name: MONGO_URI
-              value: "mongodb://kjw:1234@mongo-mongodb.default.svc.cluster.local:27017/auth"
+              valueForm:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: uri

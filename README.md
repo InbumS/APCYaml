@@ -177,6 +177,7 @@ kubectl get all
 
 ---
 
+kubectl apply -f secret-key.yaml -f secret-mongo-db.yaml
 kubectl apply -f auth_service.yaml -f auth_deploy.yaml -f dashboard_service.yaml -f dashboard_deploy.yaml -f product_service.yaml -f product_deploy.yaml -f order_service.yaml -f order_deploy.yaml
 kubectl apply -f kafka_deploy.yaml -f kafka_service.yaml
 
