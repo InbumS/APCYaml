@@ -29,6 +29,11 @@ spec:
           class: nks-block-storage
           size: 1Gi
           deleteClaim: false
+    template:
+      pod:
+        securityContext:
+          runAsUser: 0
+          fsGroup: 0
     config:
       offsets.topic.replication.factor: 3
       transaction.state.log.replication.factor: 3

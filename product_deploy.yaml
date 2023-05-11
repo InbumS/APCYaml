@@ -21,7 +21,7 @@ spec:
             - containerPort: 3002
           env:
             - name: MONGO_URI
-              valueForm:
+              valueFrom:
                 secretKeyRef:
                   name: mongodb-secret
                   key: uri

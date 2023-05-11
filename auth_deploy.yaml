@@ -21,17 +21,17 @@ spec:
             - containerPort: 3000
           env:
             - name: SECRET_KEY
-              valueForm:
+              valueFrom:
                 secretKeyRef:
                   name: secret-key
                   key: key1
             - name: SECRET_KEY2
-              valueForm:
+              valueFrom:
                 secretKeyRef:
                   name: secret-key
                   key: key2
             - name: MONGO_URI
-              valueForm:
+              valueFrom:
                 secretKeyRef:
                   name: mongodb-secret
                   key: uri
