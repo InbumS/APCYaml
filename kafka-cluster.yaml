@@ -15,7 +15,7 @@ spec:
         type: internal
         tls: false
       - name: external
-        port: 9095
+        port: 9094
         type: nodeport
         tls: false
         configuration:
@@ -41,7 +41,7 @@ spec:
       default.replication.factor: 3
       min.insync.replicas: 2
   zookeeper:
-    replicas: 3
+    replicas: 1
     storage:
       type: persistent-claim
       class: nks-block-storage
