@@ -122,10 +122,10 @@ kubectl exec -it mongo-mongodb-0 /bin/bash
 
 mongosh admin -u root -p 1234
 
-use auth;
+use apc;
 db.createCollection("users");
 db.users.insert({"userid":"1","password":"$2b$10$OQlrdbdEeQHdIL0iQXNmqe6BfWBdbnYBmWRc/Vpy4iGbVTGQYtAa2","submitrole":"0","role":"0"});
-db.createUser({"user":"kjw","pwd":"1234","roles":["readWrite","userAdmin"]});
+db.createUser({"user":"sib","pwd":"1234","roles":["readWrite","userAdmin"]});
 
 ---
 
