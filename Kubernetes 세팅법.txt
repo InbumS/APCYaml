@@ -143,7 +143,7 @@ wget https://github.com/strimzi/strimzi-kafka-operator/releases/download/0.24.0/
 kubectl create ns kafka
 tar -zxvf strimzi-0.24.0.tar.gz
 cd strimzi-0.24.0/
-sed -i 's/namespace: .*/namespace: kafka/' install/cluster-operator/*RoleBinding\*.yaml
+sed -i 's/namespace: .*/namespace: kafka/' install/cluster-operator/*RoleBinding*.yaml
 
 ---
 
